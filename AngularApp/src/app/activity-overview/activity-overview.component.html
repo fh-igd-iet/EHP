@@ -1,0 +1,117 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div class="app-component">
+  <h1>Activities</h1>
+  <div class="mat-elevation-z8">
+    <div class="spinner-wrapper">
+      <mat-spinner [hidden]="this.loaded"></mat-spinner>
+    </div>
+    <form [hidden]="!this.loaded">
+      <mat-form-field class="myFilter" appearance="fill">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event.target.value)" [value]="this.initialFilter">
+      </mat-form-field>
+    </form>
+    <mat-table [dataSource]="tableData" matSort>
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.extern_id}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.title}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="env_improvement">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Environmental improvement </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.env_improvement}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="ecolonomic_motivation">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Ecolonomic motivation </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.ecolonomic_motivation}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="spd_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> SPD </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.spd_name}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="aircraft_part_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Aircraftpart </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.aircraft_part_name}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="component_count">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Components
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+
+          <button mat-mini-fab color="primary" (click)="this.showComponents(row)" [disabled]="row.component_count<=0">
+            {{row.component_count}}
+          </button>
+
+
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="technology_count">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Technologies </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+
+          <button mat-mini-fab color="primary" (click)="this.showTechnologies(row)"
+            [disabled]="row.technology_ids.length<=0">
+            {{row.technology_count}}
+          </button>
+
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="functions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-spinner [diameter]="20" [hidden]="this.deleteProgress!=row.id"></mat-spinner>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0" [hidden]="this.deleteProgress==row.id ||
+                    !this.rest.can('rest_visualization_put') || !row.editable" (click)="this.edit(row)">
+            <mat-icon aria-label="edit">edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0" [hidden]="this.deleteProgress==row.id ||
+                    !this.rest.can('rest_visualization_delete') || !row.editable" (click)="this.delete(row)">
+            <mat-icon aria-label="delete">delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="['id', 'title', 'env_improvement', 'ecolonomic_motivation', 'spd_name', 'aircraft_part_name', 'component_count', 'technology_count', 'functions']">
+      </mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: ['id', 'title', 'env_improvement', 'ecolonomic_motivation', 'spd_name', 'aircraft_part_name', 'component_count', 'technology_count', 'functions']">
+      </mat-row>
+
+    </mat-table>
+    <button mat-raised-button aria-label="add new activity" color="primary" (click)="openAddProcessDialog()"
+      id="addbutton" [hidden]="!this.rest.can('rest_visualization_post')">
+      <mat-icon>add</mat-icon> Add new activity
+    </button>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div>
+</div>

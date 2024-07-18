@@ -1,0 +1,61 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div style="width:100%;" class="mat-elevation-z3">
+
+  <div class="spinner-wrapper" [hidden]="this.loaded">
+    <mat-spinner ></mat-spinner>
+  </div>
+  
+  <mat-form-field class="myFilter" [hidden]="!this.loaded">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+
+  <mat-table [dataSource]="tableData" matSort [hidden]="!this.loaded">
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="selection">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Select </mat-header-cell>
+      <mat-cell *matCellDef="let row" [style.backgroundImage]='this.isSelected(row.id)?"linear-gradient(to right, "+this.colorcoding.randomDeterministic(row.id+"")+", #FFF)":"unset"'> 
+          <button mat-button *ngIf='!isSelected(row.id)' (click)='this.addMaterial(row.name, row.id)'><mat-icon aria-hidden="false" aria-label="Add to observed materials">add</mat-icon></button>
+          <button mat-button *ngIf='isSelected(row.id)' (click)='this.removeMaterial(row.id)'><mat-icon aria-hidden="false" aria-label="Remove from observed materials">close</mat-icon></button>  
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-cell *matCellDef="let row" >
+        {{row.name}}
+      </mat-cell>
+    </ng-container>
+    
+
+    <mat-header-row *matHeaderRowDef="['selection','name']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['selection','name']">
+
+    </mat-row>
+
+  </mat-table>
+  <mat-paginator [length]="100"
+                [pageSize]="8"
+                [hidden]="!this.loaded"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                >
+  </mat-paginator>
+  
+  </div>
+  

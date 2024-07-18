@@ -1,0 +1,162 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div class="app-component">
+  <h3>{{title}} </h3>
+  <div class="spinner-wrapper">
+    <mat-spinner [hidden]="this.loaded"></mat-spinner>
+  </div>
+
+  <div class="mat-elevation-z8">
+
+    <form [formGroup]="this.formGroup" [hidden]="!this.loaded">
+      <!--
+    <mat-form-field appearance="fill">
+      <mat-label>Cleansky-Iteration</mat-label>
+      <mat-select [formControl]="this.csFilter">
+        <mat-option value='cs1'>
+          CS1
+        </mat-option>
+        <mat-option value='cs2'>
+          CS2
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  -->
+      <mat-form-field class="myFilter" appearance="fill">
+        <mat-label>Filter</mat-label>
+        <input [formControl]="this.textFilter" matInput>
+      </mat-form-field>
+    </form>
+    <button mat-flat-button color="primary" class="downloadAllButton" [disabled]="true||this.downloading"
+      (click)="this.downloadAllClicked()">Download all</button>
+    <br class="clearFloat" />
+
+    <mat-table [dataSource]="tableData" matSort matSortActive="name" matSortDirection="asc">
+      
+      <!-- <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.lcaProcess.id}} </mat-cell>
+      </ng-container> -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.lcaProcess.name}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="owner">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Owner </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.owner}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="source">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Source </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.lcaProcess.cs1?'CleanSky 1':'Cleansky 2'}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="confidentiality">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Confidentiality </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.confidentiality}}
+        </mat-cell>
+      </ng-container>
+
+      <!-- <ng-container matColumnDef="aggregated">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Aggregated </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.lcaProcess.aggregated?'Yes':'No'}}
+        </mat-cell>
+      </ng-container> -->
+
+      <ng-container matColumnDef="verified">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Verified </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <!-- [checked]="row.verified" -->
+            <!-- [(ngModel)]="row.verified" -->
+            <!-- (ngModelChange)="this.toggle.veryify(row)"-->
+            <!-- type="VerifyCheckBoxes"
+            id="verify-{{row.id}}" -->
+          <mat-checkbox 
+            [disabled]="!this.rest.can('is_qa_member')" 
+            [checked]="row.verified"
+            (change)="this.toggle_verify(row)" >
+          <!-- {{row.verified ? 'Yes': 'No'}} -->
+          </mat-checkbox>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="download">
+        <mat-header-cell *matHeaderCellDef>
+          <button mat-flat-button color="primary" class="downloadButton"
+            [disabled]="this.downloadIds.size==0||this.downloading" (click)="this.downloadClicked()">Download</button>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-checkbox class="table-checkbox download-checkbox" [checked]="this.downloadIds.has(row.id)" id="download-{{row.id}}"
+            [disabled]="this.downloading" (change)="this.toggleDownloadId(row.olca_id)"></mat-checkbox>
+          <!--
+      <button mat-icon-button color="primary" [disabled]="this.downloading" (click)="this.download(row.intern_id)">
+        <mat-icon aria-label="attachment">attachment</mat-icon>
+      </button>-->
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="details">
+        <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <button mat-icon-button color="primary" (click)="this.showDetails(row.lcaProcess)">
+            <mat-icon aria-label="list">list</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef [hidden]="!this.rest.can('rest_visualization_put')">Edit</mat-header-cell>
+        <mat-cell *matCellDef="let row" [hidden]="!this.rest.can('rest_visualization_put')">
+          <button mat-icon-button [disabled]="!row.owner_changeable" color="primary" (click)="this.showEdit(row)">
+            <mat-icon aria-label="edit">edit</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef [hidden]="!this.rest.can('rest_visualization_put')">Delete</mat-header-cell>
+        <mat-cell *matCellDef="let row" [hidden]="!this.rest.can('rest_visualization_put')">
+          <button mat-icon-button [disabled]="!row.owner_changeable" color="primary" (click)="this.delete(row)">
+            <mat-icon aria-label="delete">delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="['name', 'owner', 'source', 'confidentiality', 'verified', 'download', 'details', 'edit', 'delete']">
+      </mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: ['name', 'owner', 'source', 'confidentiality', 'verified', 'download', 'details', 'edit', 'delete']">
+      </mat-row>
+
+    </mat-table>
+    <button mat-raised-button aria-label="add new process" color="primary" (click)="showAdd()" id="addbutton"
+      [hidden]="!this.rest.can('rest_visualization_post')||this.router.url.includes('CS1')">
+      <mat-icon>add</mat-icon> Add new ILCD Data
+    </button>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div>
+</div>

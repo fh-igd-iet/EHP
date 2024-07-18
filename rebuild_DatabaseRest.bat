@@ -1,0 +1,2 @@
+cd DatabaseREST
+npm install

@@ -1,0 +1,43 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<mat-dialog-content>
+  <h1 *ngIf="this.name">{{this.name}}</h1>
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <!-- This is the tree node template for leaf nodes -->
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+      <!-- use a disabled button to provide padding for tree leaf -->
+      <button mat-icon-button disabled></button>
+      <ng-container *ngIf="node.search&&this.searchRoot">
+        <a [routerLink]="this.searchRoot" [queryParams]="{search:node.search}">
+          {{node.name}}
+        </a>
+      </ng-container>
+      <ng-container *ngIf="!(node.search&&this.searchRoot)">
+        {{node.name}}
+      </ng-container>
+
+    </mat-tree-node>
+    <!-- This is the tree node template for expandable nodes -->
+    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+      <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+        <mat-icon class="mat-icon-rtl-mirror">
+          {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        </mat-icon>
+      </button>
+      {{node.name}}
+    </mat-tree-node>
+  </mat-tree>
+</mat-dialog-content>

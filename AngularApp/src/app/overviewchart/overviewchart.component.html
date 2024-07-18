@@ -1,0 +1,57 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div style="width:100%;height:100%;" class="panel mat-elevation-z3">
+  <div style="padding:10px;width:100%;height:95%;box-sizing:border-box;">
+    <mat-icon aria-hidden="false" aria-label="show legend"
+        id="labelicon" (click)="toggleInfo()">info</mat-icon>
+    <svg id="overviewDiagram" style="width:100%;height:100%;">
+    </svg>
+    <div id="overviewLegend" style="display:none;width:100%;margin-top:10px;">
+      <div id="swapLegendWrapper">
+        <mat-icon aria-hidden="false" aria-label="swapLegend"
+          id="swapLegend" (click)="swapLegend()">swap_horiz</mat-icon>
+      </div>
+      <table [hidden]="!this.ecoLegendVisible">
+        <tr>
+          <td><b>[A]</b>LIFT, Identification strategy,<br /> Life scoping</td>
+          <td><b>[C]</b>Manufacture/ Production</td>
+          <td style="width:100px"><b>[REUP]</b>Re-Use</td>
+          <td><b>[ADS]</b>Integration/ Field <br/>Assembly-Disassembly-Separation</td>
+        </tr>
+        <tr>
+          <td><b>[B]</b>Materials Processes Resources</td>
+          <td><b>[D]</b>Service to component and system <!--(MRO, financing, accounting, storage, inside-outside gate processes, alt. Parts/ COTS…. Material flow logistics)--></td>
+          <td style="width:100px"><b>[EoL]</b>End of Life</td>
+          <td><b>[ASA]</b>alt sectoral applications</td>
+        </tr>
+
+      </table>
+      <table [hidden]="this.ecoLegendVisible">
+        <tr>
+          <td><b>[AIR]</b>Airframe</td>
+          <td><b>[ENG]</b>Engine</td>
+          <td><b>[SYS]</b>Systems</td>
+        </tr>
+        <tr>
+          <td><b>[LPA]</b>Large Passenger Aircraft</td>
+          <td><b>[REG]</b>Regional Aircraft</td>
+          <td><b>[FRC]</b>Fast Rotorcraft</td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+</div>

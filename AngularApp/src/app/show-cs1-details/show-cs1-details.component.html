@@ -1,0 +1,190 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<mat-dialog-content>
+  <mat-tab-group id="process-form" animationDuration="0ms">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span>
+          Process
+        </span>
+      </ng-template>
+      <table>
+        <tr>
+          <th style="min-width:150px;">ID</th>
+          <td>{{this.data.id}}</td>
+        </tr>
+        <tr class="spacer">
+          <td></td>
+        </tr>
+        <tr>
+          <th>Name</th>
+          <td>{{this.data.name}}</td>
+        </tr>
+        <tr class="spacer">
+          <td></td>
+        </tr>
+        <tr>
+          <th>Description</th>
+          <td>{{this.data.description}}</td>
+        </tr>
+        <!-- <tr class="spacer">
+          <td></td>
+        </tr>
+        <tr>
+          <th>Dataset Generator</th>
+          <td>{{this.data.dataset_generator}}</td>
+        </tr> -->
+        <tr class="spacer">
+          <td></td>
+        </tr>
+        <tr>
+          <th>UUID</th>
+          <td>{{this.data.uuid}}</td>
+        </tr>
+      </table>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span>
+          Input Flows
+        </span>
+      </ng-template>
+      <div class="tab-content">
+
+        <mat-table [dataSource]="inputFlowTableData" #inputTableSort="matSort" matSort matSortActive="name"
+          matSortDirection="asc">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="amount">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Amount </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{row.amount}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="unit">
+            <mat-header-cell *matHeaderCellDef> Unit </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{row.unit}}
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="['name', 'amount', 'unit']">
+          </mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['name', 'amount', 'unit']">
+          </mat-row>
+
+        </mat-table>
+
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span>
+          Output Flows
+        </span>
+      </ng-template>
+      <div class="tab-content">
+        <mat-table [dataSource]="outputFlowTableData" #outputTableSort="matSort" matSort matSortActive="name"
+          matSortDirection="asc">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="amount">
+            <mat-header-cell *matHeaderCellDef class="header-align-right"> Amount </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{row.amount}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="unit">
+            <mat-header-cell *matHeaderCellDef> Unit </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{row.unit}}
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="['name', 'amount', 'unit']">
+          </mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['name', 'amount', 'unit']">
+          </mat-row>
+
+        </mat-table>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span>
+          Input Parameters
+        </span>
+      </ng-template>
+      <div class="tab-content">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Value</th>
+          </tr>
+          <tr *ngFor="let p of this.data.inputParameters" style="border-top: 1px solid grey;">
+            <td>
+              {{p.name}}
+            </td>
+            <td>
+              {{p.description}}
+            </td>
+            <td>
+              {{p.value}}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span>
+          Dependent Parameters
+        </span>
+      </ng-template>
+      <div class="tab-content">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Formular</th>
+            <th>Value</th>
+          </tr>
+          <tr *ngFor="let p of this.data.dependentParameters" style="border-top: 1px solid grey;">
+            <td>
+              {{p.name}}
+            </td>
+            <td>
+              {{p.description}}
+            </td>
+            <td>
+              {{p.formular}}
+            </td>
+            <td>
+              {{p.value}}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>

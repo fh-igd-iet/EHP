@@ -1,0 +1,31 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<h2 mat-dialog-title>Add Technologie to A/C-Parts Assembly</h2>
+<mat-dialog-content>
+    <div style="width:100%;">
+                <span>{{this.reference_unit}}</span><br/>
+                <mat-spinner [hidden]="this.reference_loaded" [diameter]="20"></mat-spinner>
+                <mat-form-field [hidden]="!this.reference_loaded" style="width: 100%;">
+                    <input matInput placeholder="" [(ngModel)]="new_reference" name="newreference">
+                </mat-form-field>
+    </div>
+    <app-dynamic-form [questions]="questions" (onFormValueChanged)="this.valueChanged($event)"></app-dynamic-form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close [hidden]="this.submitted">Cancel</button>
+  <button mat-button (click)="submit($event)" [hidden]="this.submitted" [disabled]="!this.isValid()">Save</button>
+  <mat-spinner [hidden]="!this.submitted" [diameter]="20"></mat-spinner>
+</mat-dialog-actions>

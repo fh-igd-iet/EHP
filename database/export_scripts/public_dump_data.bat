@@ -1,0 +1,1 @@
+pg_dump -U postgres -W -a --column-inserts --disable-triggers -t "public.*" --exclude-table-data "public.session" -F p EHP > EHP_public_dump_data.sql

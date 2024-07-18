@@ -1,0 +1,101 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div class="app-component">
+  <h1>Components</h1>
+  <div class="mat-elevation-z8">
+    <div class="spinner-wrapper">
+      <mat-spinner [hidden]="this.loaded"></mat-spinner>
+    </div>
+    <form [hidden]="!this.loaded">
+      <mat-form-field class="myFilter" appearance="fill">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event.target.value)" [value]="this.initialFilter">
+      </mat-form-field>
+    </form>
+    <mat-table [dataSource]="tableData" matSort>
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+        <mat-cell fxFlex="50px" *matCellDef="let row"> {{row.id}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="demo_nr">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Demo. Nr. </mat-header-cell>
+        <mat-cell fxFlex="100px" *matCellDef="let row">
+          {{row.demo_nr}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="code">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Code </mat-header-cell>
+        <mat-cell fxFlex="100px" *matCellDef="let row">
+          {{row.code}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell fxFlex="200px" *matCellDef="let row">
+          {{row.name}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="spd_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> SPD </mat-header-cell>
+        <mat-cell fxFlex="100px" *matCellDef="let row">
+          {{row.spd_name}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="is_demo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Demonstrator </mat-header-cell>
+        <mat-cell fxFlex="100px" *matCellDef="let row">
+          {{row.is_demo ? "Yes" : "No"}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="activity_count">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Activities </mat-header-cell>
+        <mat-cell fxFlex="50px" *matCellDef="let row">
+          <button mat-mini-fab color="primary" (click)="this.showActivities(row)" [disabled]="row.activity_count<=0">
+            {{row.activity_count}}
+          </button>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="functions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-spinner [diameter]="20" [hidden]="this.deleteProgress!=row.id"></mat-spinner>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0" [hidden]="this.deleteProgress==row.id ||
+                    !this.rest.can('rest_visualization_put') || !row.editable" (click)="this.edit(row)">
+            <mat-icon aria-label="edit">edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0" [hidden]="this.deleteProgress==row.id ||
+                    !this.rest.can('rest_visualization_delete') || !row.editable" (click)="this.delete(row)">
+            <mat-icon aria-label="delete">delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="['code', 'name', 'demo_nr', 'spd_name', 'is_demo', 'activity_count', 'functions']">
+      </mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: [ 'code', 'name', 'demo_nr', 'spd_name', 'is_demo', 'activity_count', 'functions']">
+      </mat-row>
+
+    </mat-table>
+    <button mat-raised-button aria-label="add new activity" color="primary" (click)="openAddComponentDialog()"
+      id="addbutton" [hidden]="!this.rest.can('rest_visualization_post')">
+      <mat-icon>add</mat-icon> Add new component
+    </button>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div>
+</div>

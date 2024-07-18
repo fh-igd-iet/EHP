@@ -1,0 +1,72 @@
+/**
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+#fsd-accordion
+{
+    max-width: 1100px;
+    margin: auto;
+}
+
+.flagship-expansion-panel-header
+{
+    height:200px;
+    
+    
+}
+
+.flagship-expansion-panel-header h2
+{
+    margin-left: 10px;
+    
+}
+
+
+.demonstrator_preview,.demonstrator_preview_wrapper
+{
+    display: inline-block;
+    width:200px;
+    background-color: #ffffff;
+    margin-right: 10px;
+    vertical-align: middle; /* Align them vertically */
+}
+
+.demonstrator_preview_wrapper
+{
+    padding: 2px;
+    height:250px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.demonstrator_preview
+{
+    height: 180px;
+    width: 190px;
+}
+
+.tech-list
+{
+    float: left;
+    max-width: calc(100% - 420px);
+    overflow: auto;
+
+}
+
+.model-locations
+{
+    float: left;
+    height: 100%;
+    width: 420px;
+}

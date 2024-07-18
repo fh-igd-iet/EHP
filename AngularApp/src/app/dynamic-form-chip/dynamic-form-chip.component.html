@@ -1,0 +1,39 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<mat-form-field [formGroup]="form">
+  <mat-chip-list ngDefaultControl ngInput #chipList>
+    <mat-chip *ngFor="let chip of selectedChips"
+      [ngClass]="{'present':chip['key']>=0&&!chip.color, 'present_colorized':chip['key']>=0&&chip.color}"
+      [style.background-color]="chip.color?chip.color:undefined" [style.color]="textColor(chip.color)"
+      [removable]="removable" [selectable]="selectable" (removed)="remove(chip)">
+      {{chip.value}}
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+    <input ngDefaultControl placeholder="{{question.label}}" #chipInput [formControl]="nativeControl"
+      [matAutocomplete]="auto" [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)">
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    <mat-option *ngFor="let chip of filteredChips" [value]="chip.key">
+      {{chip.value}}
+    </mat-option>
+  </mat-autocomplete>
+
+
+  <div *ngIf="this.showSelectArrow" class="mat-select-arrow-wrapper" style="float:right">
+    <div class="mat-select-arrow"></div>
+  </div>
+</mat-form-field>

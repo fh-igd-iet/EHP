@@ -1,0 +1,71 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div style="width:100%;padding:10px;" class="mat-elevation-z3">
+
+  <div class="spinner-wrapper" [hidden]="this.loaded">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <mat-form-field class="myFilter" [hidden]="!this.loaded">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+
+  <mat-table [dataSource]="tableData" matSort [hidden]="!this.loaded" matSortActive="selection" matSortDirection="asc">
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> DB-Id </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.process_id}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="extern_id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.extern_id}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="selection">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Select </mat-header-cell>
+      <mat-cell *matCellDef="let row" [attr.data-process-id]="row.process_id"
+        [attr.data-process-name]="row.process_name" [class]="{'impact-comparison-colorcell':true}"
+        style="position: relative;">
+        <div style="position:absolute;left:0;top:0;width:100%;height:100%;" [attr.data-process-name]="row.process_name"
+          [attr.data-process-id]="row.process_id" class="button-gradient"
+          [style.backgroundImage]="backgroundImage(row)">
+        </div>
+        <button mat-button *ngIf='!isSelected(row)'
+          (click)='this.addResult(row)'>
+          <mat-icon aria-hidden="false" aria-label="Add to observed materials">add</mat-icon>
+        </button>
+        <button mat-button *ngIf='isSelected(row)' (click)='this.removeResult(row)'>
+          <mat-icon aria-hidden="false" aria-label="Remove from observed materials">close</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="process_name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        {{row.process_name}} 
+      </mat-cell>
+    </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="['selection', 'extern_id', 'process_name']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['selection', 'extern_id', 'process_name']">
+
+    </mat-row>
+
+  </mat-table>
+  <mat-paginator [length]="100" [pageSize]="8" [hidden]="!this.loaded" [pageSizeOptions]="[5, 10, 25, 100]">
+  </mat-paginator>
+
+</div>

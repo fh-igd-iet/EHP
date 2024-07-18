@@ -1,0 +1,40 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<mat-form-field *ngIf="this.edit" [formGroup]="this.formGroup">
+  <textarea matInput [placeholder]="this.name"
+    [formControlName]="this.controlName"
+    *ngIf="this.question.controlType=='textbox'">
+  </textarea>
+
+  <mat-label *ngIf="this.question.controlType=='owner'||this.question.controlType=='spd'">
+    {{this.name}}
+  </mat-label>
+  <mat-select *ngIf="this.question.controlType=='owner'||this.question.controlType=='spd'"
+       [(value)]="this.question.value"
+       [formControlName]="this.controlName">
+    <mat-option *ngFor='let option of this.question.options' [value]="option.key">
+      {{option.value}}
+    </mat-option>
+  </mat-select>
+
+  <mat-error *ngIf="this.control.touched&&!this.control.valid">
+    {{this.control.status}}
+  </mat-error>
+</mat-form-field>
+<span *ngIf="!this.edit">
+  {{this.value}}
+</span>

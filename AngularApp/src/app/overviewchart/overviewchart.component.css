@@ -1,0 +1,97 @@
+/**
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+text
+{
+	font-family: Verdana;
+}
+
+h1
+{
+	font-family: Verdana;
+}
+
+.slice {
+   font-size: 12pt;
+   font-family: 'Open Sans';
+   fill: #FFF;
+   font-weight: bold;	
+}
+
+#overviewtext text
+{
+	color: #000;
+	font-size: 50pt;
+}
+
+#labelicon
+{
+   display: block;
+   top: 0px;
+   left: 0px;
+   color: black;
+   z-index: 999;
+   cursor: pointer;
+   user-select: none;
+}
+
+#swapLegendWrapper
+{
+   display: block;
+   position: relative;
+   left: 0px;
+   top: 70px;
+   width: 100%;
+   height: 0px;
+   text-align: right;
+}
+#swapLegend
+{
+   color: black;
+   cursor: pointer;
+   z-index: 999;
+   user-select: none;
+}
+
+#overviewLegend
+{
+   display: block;
+   position: relative;
+
+}
+
+#overviewLegend table
+{
+   border-spacing: 0;
+   margin: auto;
+}
+
+#overviewLegend th
+{
+   text-align: right;
+}
+
+#overviewLegend th, #overviewLegend td
+{
+   font-size: 8pt;
+   width: 150px;
+}
+
+#overviewLegend .label-entry
+{
+   float: left;
+   font-size: 8pt;
+   margin-right: 5px;
+}

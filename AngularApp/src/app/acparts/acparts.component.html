@@ -1,0 +1,117 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<app-indicatorpicker #indicatorSelection (OnIndicatorsChanged)="this.indicatorsChanged($event)"
+    (OnMethodsChanged)="this.methodsChanged($event)">
+</app-indicatorpicker>
+
+<div *ngIf="loaded">
+    <div class="mat-elevation-z3" style="padding: 10px; margin-top:10px; margin-bottom: 20px;"
+        *ngFor="let tableData of tableDatas; index as i;">
+        <h2>{{this.acparts[i].name}}
+            <button mat-icon-button color="primary" (click)="this.deleteAssembly(i)">
+                <mat-icon aria-label="delete">delete</mat-icon>
+            </button>
+        </h2>
+        <table style="width:100%">
+            <tr>
+                <td style="vertical-align: top;">
+                    <mat-table [dataSource]="tableData" matSort [hidden]="false" matSortActive="name"
+                        matSortDirection="asc">
+                        <ng-container matColumnDef="name">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+                            <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="amount">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Amount </mat-header-cell>
+                            <mat-cell *matCellDef="let row; let j = index;">      
+                                <input #amountInputFields type="text" style="max-width: 85%;" 
+                                value="{{(row.amount).toFixed(2)}}"
+                                (blur)="this.amountChange($event, row.assembly_id, row.process_id, j)">
+                            </mat-cell>
+                        </ng-container>
+
+                        <!-- min  -->
+                        <ng-container matColumnDef="min">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Minimum </mat-header-cell>
+                            <mat-cell *matCellDef="let row; let j = index;">      
+                                <input #minInputFields type="text" style="max-width: 85%;" 
+                                    value="{{(row.amount_min).toFixed(2)}}" 
+                                    (blur)="this.updateMin($event, row.assembly_id, row.process_id, j)">
+                            </mat-cell>
+                        </ng-container>
+
+                        <!-- slider  -->
+                        <ng-container matColumnDef="slider">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
+                            <mat-cell *matCellDef="let row; let j = index;">
+                                <input
+                                    #sliderInputFields 
+                                    type="range" class="form-range" style="max-width: 85%;"
+                                    min="{{row.amount_min}}" 
+                                    max="{{row.amount_max}}"
+                                    step="{{ (row.amount_max / (row.amount_max * 100)) }}"
+                                    value="{{row.amount}}" 
+                                    (mouseup)="this.amountChange($event, row.assembly_id, row.process_id, j)">
+                            </mat-cell>
+                        </ng-container>
+
+                        <!-- max -->
+                        <ng-container matColumnDef="max">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Maximum </mat-header-cell>
+                            <mat-cell *matCellDef="let row; let j = index;">      
+                                <input #maxInputFields type="text" style="max-width: 85%;" 
+                                    value="{{(row.amount_max).toFixed(2)}}" 
+                                    (blur)="this.updateMax($event, row.assembly_id, row.process_id, j)">
+                            </mat-cell>
+                        </ng-container>
+
+
+                        <ng-container matColumnDef="reference">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Reference </mat-header-cell>
+                            <mat-cell *matCellDef="let row" > {{parseFloat(row.reference).toFixed(2)}} 
+                            </mat-cell>
+                        </ng-container>
+                        
+                        <ng-container matColumnDef="unit">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Unit </mat-header-cell>
+                            <mat-cell *matCellDef="let row"> {{row.reference_unit}} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="delete">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+                                <button mat-icon-button color="primary"
+                                    (click)="this.deleteProcess(row.assembly_id, row.process_id)">
+                                    <mat-icon aria-label="delete"> delete </mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row
+                            *matHeaderRowDef="['name', 'amount', 'min', 'slider', 'max', 'reference', 'unit', 'delete']"></mat-header-row>
+                        <mat-row
+                            *matRowDef="let row; columns: ['name', 'amount', 'min', 'slider', 'max', 'reference', 'unit', 'delete']">
+                        </mat-row>
+                    </mat-table>
+                </td>
+                <td>
+                    <app-barchart #barchart [barLabels]="Object.keys(this.barchartdata[i])"
+                        [barValues]="Object.values(this.barchartdata[i])" [barColors]="this.barchartcolors">
+                    </app-barchart>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

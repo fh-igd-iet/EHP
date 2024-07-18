@@ -1,0 +1,11 @@
+Model Information:
+* title:	Helicopter
+* source:	https://sketchfab.com/3d-models/helicopter-3a9a66d436544bcaa96550a6a90bb345
+* author:	DBDIEL (https://sketchfab.com/DBDIEL)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Helicopter" (https://sketchfab.com/3d-models/helicopter-3a9a66d436544bcaa96550a6a90bb345) by DBDIEL (https://sketchfab.com/DBDIEL) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

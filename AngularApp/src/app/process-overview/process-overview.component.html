@@ -1,0 +1,87 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div class="app-component">
+  <h1>Technologies</h1>
+  <div class="mat-elevation-z8">
+    <div class="spinner-wrapper">
+      <mat-spinner [hidden]="this.loaded"></mat-spinner>
+    </div>
+
+    <form [hidden]="!this.loaded">
+      <mat-form-field class="myFilter" appearance="fill">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event.target.value)" [value]="this.initialFilter">
+      </mat-form-field>
+    </form>
+
+    <mat-table [dataSource]="tableData" matSort matSortActive="extern_id" matSortDirection="asc">
+      <ng-container matColumnDef="extern_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.extern_id}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.name}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="spd_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> SPD </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.spd_name}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="activity_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Activity </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a routerLink="/showActivity" [queryParams]="{search:row.activity_extern_id}">{{row.activity_name}}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="parent_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Parent </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.parent_name}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="functions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-spinner [diameter]="20" [hidden]="this.deleteProgress!=row.id"></mat-spinner>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0" [hidden]="this.deleteProgress==row.id ||
+                    !this.rest.can('rest_visualization_put') || !row.editable" (click)="this.edit(row)">
+            <mat-icon aria-label="edit">edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0" [hidden]="this.deleteProgress==row.id ||
+                    !this.rest.can('rest_visualization_delete') || !row.editable" (click)="this.delete(row)">
+            <mat-icon aria-label="delete">delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="['extern_id', 'name', 'spd_name', 'activity_name', 'functions']">
+      </mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['extern_id', 'name', 'spd_name', 'activity_name', 'functions']">
+      </mat-row>
+
+    </mat-table>
+    <button mat-raised-button aria-label="add new process" color="primary" (click)="openAddTechnologyDialog()"
+      id="addbutton" [hidden]="!this.rest.can('rest_visualization_post')">
+      <mat-icon>add</mat-icon> Add new technology
+    </button>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div>
+</div>

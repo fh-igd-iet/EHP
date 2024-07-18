@@ -1,0 +1,85 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<!--from https://angular.io/guide/dynamic-form-->
+<div [ngSwitch]="question.controlType">
+
+  <mat-form-field [formGroup]="form" *ngSwitchCase="'textbox'">
+    <input matInput [formControlName]="question.key" [placeholder]="this.label" [id]="question.key"
+      [type]="question.type" [value]="question.value||''" [autocomplete]="question.autocomplete">
+  </mat-form-field>
+
+
+  <mat-form-field [formGroup]="form" *ngSwitchCase="'dropdown'">
+    <mat-label [attr.for]="question.key">{{this.label}}</mat-label>
+    <mat-select [id]="question.key" [formControlName]="question.key">
+      <mat-option *ngFor="let opt of question.options" [value]="opt.key">
+        {{opt.value}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div [formGroup]="form" *ngSwitchCase="'file'" [hidden]="form.controls[question.key].disabled">
+    <span class="mat-fake-label">{{this.label}}</span>
+    <div class="filePreview" [innerHTML]="question.preview" *ngIf="question.preview">
+
+    </div>
+    <div class="fileContent" *ngIf="!question.multiple && form.value && fileName != ''">{{fileName}}</div>
+    <button mat-raised-button id="margin-button" (click)="hiddenFileInput.click()">Choose
+      File</button><br />
+    <input hidden #hiddenFileInput [formControlName]="question.key" [placeholder]="this.label" [id]="question.key"
+      type="file" [value]="question.value||''" [accept]="question.accept||undefined"
+      (change)="handleFileInput(question.key, $event.target.files);" [multiple]="question.multiple?1:0">
+  </div>
+
+  <!--
+<mat-form-field [formGroup]="form" *ngSwitchCase="'owner'">
+  <mat-label [attr.for]="question.key">{{this.label}}</mat-label>
+  <mat-select
+          [id]="question.key" 
+          [formControlName]="question.key" >
+    <mat-option *ngFor="let opt of question.options" [value]="opt.key">
+      {{opt.value}}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="!this.isValid">
+      {{this.label}} is required
+  </mat-error>
+</mat-form-field>
+
+<mat-form-field [formGroup]="form" *ngSwitchCase="'spd'">
+  <mat-label [attr.for]="question.key">{{this.label}}</mat-label>
+  <mat-select
+          [id]="question.key" 
+          [formControlName]="question.key">
+    <mat-option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</mat-option>
+  </mat-select>
+  <mat-error *ngIf="!this.isValid">
+      {{this.label}} is required
+  </mat-error>
+</mat-form-field>
+-->
+  <app-dynamic-form-chip [question]="question" [form]="form" *ngSwitchCase="'chips'"></app-dynamic-form-chip>
+
+  <mat-error *ngIf="!this.isValid&&form.controls[question.key].touched" class="mat-error">
+
+    <ng-container *ngIf="this.getErrors(question.key).length>0">
+      <span *ngFor="let error of this.getErrors(question.key)">
+        {{error}}
+      </span>
+    </ng-container>
+  </mat-error>
+
+</div>

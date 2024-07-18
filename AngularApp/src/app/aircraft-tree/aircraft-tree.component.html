@@ -1,0 +1,52 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div style="width:100%;height:100%;background: white;" class="panel scrollable mat-elevation-z3">
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <!-- This is the tree node template for leaf nodes -->
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+    <!-- use a disabled button to provide padding for tree leaf -->
+    <button mat-icon-button disabled></button>
+
+    <div *ngIf='node.color != undefined' style='width:10px;height:20px;margin-right:5px;display:inline-box;' [style.background]='node.color'>&nbsp;</div>
+      <mat-icon *ngIf='node.color == undefined' class="mat-icon-rtl-mirror">remove</mat-icon>
+
+      <span
+      [style.border] = 'node.name==selectedName?"2px solid "+node.color:"none"'
+      style="cursor:pointer;padding: 0px 3px;border-radius: 6px;"
+      (click)='this.navigation.navigate([node.name])'>
+        {{node.name}}
+      </span>
+  </mat-tree-node>
+  <!-- This is the tree node template for expandable nodes -->
+  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+    <button mat-icon-button matTreeNodeToggle
+            [attr.aria-label]="'toggle ' + node.name">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    <div *ngIf='node.color != undefined' style='width:10px;height:20px;margin-right:5px;display:inline-box;' [style.background]='node.color'>&nbsp;</div>
+
+    <span
+    [style.border] = 'node.name==selectedName?"2px solid "+node.color:"none"'
+          style="cursor:pointer;padding: 0px 3px;border-radius: 6px;"
+          (click)='this.navigation.navigate([node.name])'>
+      {{node.name}}
+    </span>
+
+  </mat-tree-node>
+</mat-tree>
+</div>

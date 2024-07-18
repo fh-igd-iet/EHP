@@ -1,0 +1,191 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<nav [hidden]="!this.rest.logedin">
+  <img src="assets/igd-small.svg" style="    width: 150px;" />
+
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+  routerLink="/fsdoverview" routerLinkActive="active">
+  <mat-icon fontIcon="home"></mat-icon>
+  FSD Overview
+</button>
+
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+  routerLink="/acparts" routerLinkActive="active">
+  <mat-icon fontIcon="extension"></mat-icon>
+  A/C-Parts
+  <span *ngIf="this.assignedAssemblies>0" class="float-right badge badge-pill badge-primary mt-2 ml-1">{{this.assignedAssemblies}}</span>
+  </button>
+
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+    routerLink="/showFlagshipDemonstrators" routerLinkActive="active">
+    <mat-icon fontSet="fa" fontIcon="fa-plane"></mat-icon>
+    Aircraft Model
+  </button>
+
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+    routerLink="/showHelicopterDemonstrators" routerLinkActive="active">
+    <mat-icon fontSet="fa" fontIcon="fa-helicopter"></mat-icon>
+    Helicopter Model
+  </button>
+
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+    routerLink="/showProductionDemonstrators" routerLinkActive="active">
+    <mat-icon fontSet="fa" fontIcon="fa-industry"></mat-icon>
+    Factory Layout
+  </button>
+
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+    routerLink="/showCS2Impacts" routerLinkActive="active">
+    <mat-icon fontSet="fa" fontIcon="fa-poll"></mat-icon>
+    LCIA Results
+    <span *ngIf="this.selectedResults.length>0" class="float-right badge badge-pill badge-primary mt-2 ml-1">{{this.selectedResults.length}}</span>
+  </button>
+
+  <button mat-button routerLink="/showCS2ImpactsQa" routerLinkActive="active" [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get') || !this.rest.can('is_qa_member')">
+  <!--  -->
+  <mat-icon fontSet="fa" fontIcon="fa-poll"></mat-icon>
+  LCIA Results QA
+  <span *ngIf="this.selectedResultsQa.length>0" class="float-right badge badge-pill badge-primary mt-2 ml-1">{{this.selectedResultsQa.length}}</span>
+</button>
+
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+    [matMenuTriggerFor]="lcamenu">
+    <mat-icon fontSet="fa" fontIcon="fa-database"></mat-icon>
+    ILCD Data
+  </button>
+  <mat-menu #lcamenu="matMenu">
+    <a mat-menu-item routerLink="/showCS2Processes" routerLinkActive="active">
+      CleanSky 2
+    </a>
+    <a mat-menu-item routerLink="/showCS1Processes" routerLinkActive="active">
+      CS1 AED
+    </a>
+  </mat-menu>
+
+  <!-- 
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+    [matMenuTriggerFor]="impactsmenu">
+    <mat-icon fontSet="fa" fontIcon="fa-globe-americas"></mat-icon>
+    LCIA Results
+  </button>
+  <mat-menu #impactsmenu="matMenu">
+    <a mat-menu-item routerLink="/showCS1Impacts" routerLinkActive="active">
+      CS1 AED
+    </a>
+    <a mat-menu-item routerLink="/showCS2Impacts" routerLinkActive="active">
+      CleanSky 2
+    </a>
+  </mat-menu>
+
+  <button mat-button [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+    [matMenuTriggerFor]="demonstratormenu">
+    <mat-icon fontSet="fa" fontIcon="fa-chalkboard-teacher"></mat-icon>
+    Demonstrators
+  </button>
+  <mat-menu #demonstratormenu="matMenu">
+    <a mat-menu-item routerLink="/showFlagshipDemonstrators" routerLinkActive="active">
+      Flagship Demonstrators
+    </a>
+    <a mat-menu-item routerLink="/showProductionDemonstrators" routerLinkActive="active">
+      Production Demonstrators
+    </a>
+    <a mat-menu-item routerLink="/showDemonstratorCohorts" routerLinkActive="active">
+      Demonstrator Cohorts
+    </a>
+  </mat-menu>
+-->
+
+  <button mat-button [matMenuTriggerFor]="othersmenu">
+    <mat-icon fontSet="fa" fontIcon="fa-archive"></mat-icon>
+    Meta Data
+  </button>
+  <mat-menu #othersmenu="matMenu">
+    <a mat-menu-item [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+      routerLink="/showComponent" routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-puzzle-piece"></mat-icon>
+      Components
+    </a>
+    <a mat-menu-item [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+      routerLink="/showActivity" routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-running"></mat-icon>
+      Activities
+    </a>
+    <a mat-menu-item [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')"
+      routerLink="/showProcesses" routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-hammer"></mat-icon>
+      Technologies
+    </a>
+  </mat-menu>
+
+  <!-- 
+  <button mat-button [matMenuTriggerFor]="olddatamenu">
+    <mat-icon fontSet="fa" fontIcon="fa-database"></mat-icon>
+    EDAS/VEES
+  </button>
+  <mat-menu #olddatamenu="matMenu">
+    <a mat-menu-item [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')" routerLink="/overview"
+      routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-home"></mat-icon>
+      Overview
+    </a>
+
+    <a mat-menu-item [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')" routerLink="/numtechs"
+      routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-cogs"></mat-icon>
+      Technologies
+    </a>
+
+    <a mat-menu-item [hidden]="!this.rest.logedin || !this.rest.can('rest_visualization_get')" routerLink="/budget"
+      routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-euro-sign"></mat-icon>
+      Budget Distribution
+    </a>
+  </mat-menu>
+-->
+
+  <button mat-button [matMenuTriggerFor]="usermenu"
+    [hidden]="!(this.rest.can('user_management_view')||this.rest.can('user_management_edit'))">
+    <mat-icon fontSet="fa" fontIcon="fa-users"></mat-icon>
+    User Management
+  </button>
+
+  <mat-menu #usermenu="matMenu">
+    <a mat-menu-item [hidden]="!this.rest.logedin" routerLink="/showUser" routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-user"></mat-icon> Users
+    </a>
+    <a mat-menu-item [hidden]="!this.rest.logedin" routerLink="/showRole" routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-users"></mat-icon> Groups
+    </a>
+    <a mat-menu-item [hidden]="!this.rest.logedin" routerLink="/showOwner" routerLinkActive="active">
+      <mat-icon fontSet="fa" fontIcon="fa-users"></mat-icon> Owners
+    </a>
+  </mat-menu>
+
+  <div id="loginStatus" style="padding-right: 20px;">
+    <button mat-button color="primary" (click)="this.editUser()">
+      <mat-icon fontSet="fa" fontIcon="fa-user"></mat-icon>
+      {{this.rest.username}}
+    </button>
+    <button mat-raised-button color="warn" (click)="this.logout()">
+      <mat-icon fontSet="fa" fontIcon="fa-sign-out-alt"></mat-icon>
+      Logout
+    </button>
+  </div>
+</nav>
+
+<div id="app-container">
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,98 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div id="fsd-accordion">
+  <mat-accordion class="example-headers-align" multi *ngIf="demonstrators != null">
+
+    <mat-expansion-panel *ngFor="let demonstrator of demonstrators">
+      <mat-expansion-panel-header class="flagship-expansion-panel-header">
+        <img style="max-width:150px;max-height:150px;" src="{{this.rest.imageURL(demonstrator.image_id)}}"
+          *ngIf="demonstrator.image_id!=null">
+        <h2> {{demonstrator.name}}</h2>
+      </mat-expansion-panel-header>
+
+      <mat-accordion multi>
+
+        <mat-expansion-panel *ngFor="let activity_name of demonstrator.activity_names; index as i">
+          <mat-expansion-panel-header *ngIf="activity_name">
+            <b> {{activity_name}}</b>
+          </mat-expansion-panel-header>
+
+          <div class="model-locations">
+            <ng-container *ngIf="modelpathsLoaded" >
+              <ng-container *ngFor="let model of modelpathsArray">
+                <ng-container *ngFor="let demo_code of demonstrator.component_codes[i]; index as j">
+                  <div class="demonstrator_preview_wrapper" *ngIf="modelpaths.get(model).has(demo_code)">
+
+                    <div class="demonstrator_preview" [attr.data-model]="model" [attr.data-demo_code]="demo_code">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                        <rect fill="#ddd" width="100" height="100" />
+                        <text fill="rgba(0,0,0,0.5)" font-family="sans-serif" font-size="20" dy="10.5"
+                          font-weight="bold" x="50%" y="50%" text-anchor="middle">loading...</text>
+                      </svg>
+                    </div>
+                    {{demonstrator.component_names[i][j]}}
+                  </div>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </div>
+
+          <mat-list class="tech-list">
+            <mat-list-item *ngFor="let tech_id of demonstrator.technology_ids[i]; index as j">
+              <ng-container *ngIf="demonstrator.technology_names[i][j]">
+                <td>
+                  <button class="mr-2 fab-button mat-elevation-z0" mat-mini-fab color="primary"
+                    (click)="this.addToAssembly(demonstrator.technology_process_ids[i][j])">
+                    <!-- puzzle  -->
+                    <mat-icon class="fab-icon translate-middle" aria-label="extension">extension</mat-icon>
+                    <!-- badge -->
+                    <span *ngIf="this.getAssignedAssemblies(demonstrator.technology_process_ids[i][j]).length>0"
+                      class="badge badge-danger position-absolute translate-middle">{{this.getAssignedAssemblies(demonstrator.technology_process_ids[i][j]).length}}
+                    </span>
+                  </button>
+                </td>
+                <td>
+                  <button *ngIf="!this.includesData(demonstrator.technology_names[i][j])"
+                    class="mr-2 fab-button mat-elevation-z0" mat-mini-fab color="primary"
+                    (click)="this.selectData(demonstrator.technology_names[i][j], tech_id, demonstrator.technology_process_ids[i][j])">
+                    <mat-icon class="fab-icon" aria-label="compare_arrows">compare_arrows</mat-icon>
+                  </button>
+                  <button *ngIf="this.includesData(demonstrator.technology_names[i][j])"
+                    class="mr-2 fab-button mat-elevation-z0" mat-mini-fab color="primary"
+                    (click)="this.deselectData(demonstrator.technology_names[i][j], tech_id, demonstrator.technology_process_ids[i][j])">
+                    <mat-icon class="fab-icon" aria-label="remove">remove</mat-icon>
+                  </button>
+                </td>
+                <td>
+                  <a routerLink="/showCS2Impacts"
+                    (click)="this.selectData(demonstrator.technology_names[i][j], tech_id, demonstrator.technology_process_ids[i][j])">
+                    <b>{{tech_id}}</b>&nbsp; {{i}}. {{j}}. {{demonstrator.technology_names[i][j]}}
+                  </a>
+                </td>
+              </ng-container>
+
+            </mat-list-item>
+          </mat-list>
+
+        </mat-expansion-panel>
+
+      </mat-accordion>
+
+
+    </mat-expansion-panel>
+
+  </mat-accordion>
+</div>

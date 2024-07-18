@@ -1,0 +1,104 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<mat-tab-group id="tabgroup">
+
+    <mat-tab label="Activities">
+        <mat-tree [dataSource]="dataSourceACT" [treeControl]="treeControlACT">
+                <!-- This is the tree node template for leaf nodes -->
+                <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                    <mat-icon class="mat-icon-rtl-mirror" [style.color]="'#'+node.color">
+                        label_important</mat-icon>
+                        <span [style.border]="node.id==this.currentLink?'1px solid black':none"
+                        style="cursor:pointer;padding: 0px 3px;border-radius: 6px;" (click)="navigateTo(node.id)">
+                        {{node.name}}
+                    </span>
+                </mat-tree-node>
+
+                <!-- This is the tree node template for expandable nodes -->
+                <mat-tree-node *matTreeNodeDef="let node;when: isLevel0" matTreeNodePadding>
+                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name"
+                        [disabled]="!this.hasChild(0, node)">
+                        <mat-icon class="mat-icon-rtl-mirror">
+                            {{treeControlACT.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                        </mat-icon>
+                    </button>
+                    <span style="cursor:pointer;padding: 0px 3px;border-radius: 6px;">
+                        {{node.name}}
+                    </span>
+                </mat-tree-node>
+        </mat-tree>
+    </mat-tab>
+
+
+    <mat-tab label="Simp. A/C Model" *ngIf="samList.length > 0 || samListMode == 'blacklist'">
+        <mat-tree [dataSource]="dataSourceSAM" [treeControl]="treeControlSAM">
+            <!-- This is the tree node template for leaf nodes -->
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                <mat-icon class="mat-icon-rtl-mirror" [style.color]="'#'+node.color">
+                    label_important</mat-icon>
+                <span [style.border]="node.id==this.currentLink?'1px solid black':none"
+                    style="cursor:pointer;padding: 0px 3px;border-radius: 6px;" (click)="navigateTo(node.id)">
+                    {{node.name}}
+                </span>
+            </mat-tree-node>
+
+            <!-- This is the tree node template for expandable nodes -->
+            <mat-tree-node *matTreeNodeDef="let node;when: isSAM" matTreeNodePadding>
+                <button mat-icon-button matTreeNodeToggle [disabled]="!this.hasChild(0,node)"
+                    [attr.aria-label]="'toggle ' + node.name">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControlSAM.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+
+                <span style="cursor:pointer;padding: 0px 3px;border-radius: 6px;" (mouseenter)="selectSAM(node.id)"
+                    (mouseleave)="selectSAM(null)">
+                    {{node.name}}
+                </span>
+
+            </mat-tree-node>
+        </mat-tree>
+    </mat-tab>
+
+    <mat-tab label="SPD" *ngIf="spdList.length > 0 || spdListMode == 'blacklist'">
+        <mat-tree [dataSource]="dataSourceSPD" [treeControl]="treeControlSPD">
+            <!-- This is the tree node template for leaf nodes -->
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                <mat-icon class="mat-icon-rtl-mirror" [style.color]="'#'+node.color">
+                    label_important</mat-icon>
+                <span [style.border]="node.id==this.currentLink?'1px solid black':none"
+                    style="cursor:pointer;padding: 0px 3px;border-radius: 6px;" (click)="navigateTo(node.id)">
+                    {{node.name}}
+                </span>
+            </mat-tree-node>
+
+            <!-- This is the tree node template for expandable nodes -->
+            <mat-tree-node *matTreeNodeDef="let node;when: isLevel0" matTreeNodePadding>
+                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name"
+                    [disabled]="!this.hasChild(0, node)">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControlSPD.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+                <span style="cursor:pointer;padding: 0px 3px;border-radius: 6px;" (mouseenter)="selectSPD(node.id)"
+                    (mouseleave)="selectSPD(null)">
+                    {{node.name}}
+                </span>
+            </mat-tree-node>
+        </mat-tree>
+    </mat-tab>
+
+</mat-tab-group>

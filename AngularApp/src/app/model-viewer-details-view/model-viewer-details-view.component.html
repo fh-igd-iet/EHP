@@ -1,0 +1,115 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<!-- Display the image if available -->
+<img *ngIf="imageSrc" [src]="imageSrc" (error)="handleImageError()">
+
+<!-- Display the name only if there is no image -->
+<h2 *ngIf="!imageSrc">{{ name }}</h2>
+
+<!-- Display the name if there is an image -->
+<h2 *ngIf="imageSrc">{{ name }}</h2>
+
+<!-- Display the description if available -->
+<!--<p *ngIf="description">{{ description }}</p>-->
+
+<div class="row" *ngIf="this.demonstrator != null" id="detailsTable">
+    <div class="col-sm-12">
+        <!--<b>Component</b>-->
+        <table>
+            <tr>
+                <th>
+                    Component
+                </th>
+                <td class="td-spacing">
+                    <a [routerLink]="'showComponent'" [queryParams]="{search:this.demonstrator.code}">
+                        {{this.demonstrator.code}}
+                    </a>
+
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    SPD
+                </th>
+                <td class="td-spacing">
+                    {{this.demonstrator.spd_name}}
+                </td>
+            </tr>
+        </table>
+        <b>Activities</b>
+        <div id="lca-data-container">
+            <span *ngIf="this.lcaData.length <= 0">
+                None
+            </span>
+
+            <mat-accordion *ngIf="this.lcaData.length > 0">
+                <mat-expansion-panel *ngFor="let activity of this.lcaData">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <b>{{activity['activity_name']}}</b>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <table>
+                        <tr *ngFor="let process_name of activity['process_names']; index as i">
+                            <ng-container>
+
+                                <td>
+                                    <button class="mr-2 fab-button mat-elevation-z0" mat-mini-fab color="primary"
+                                        (click)="this.addToAssembly(activity['process_ids'][i])">
+                                        <!-- puzzle  -->
+                                        <mat-icon class="fab-icon translate-middle" aria-label="extension">extension</mat-icon>
+                                        <!-- badge -->
+                                        <span *ngIf="this.getAssignedAssemblies(activity['process_ids'][i]).length>0"
+                                            class="badge badge-danger translate-middle badge-align"> 
+                                            {{this.getAssignedAssemblies(activity['process_ids'][i]).length}}
+                                        </span>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button *ngIf="!this.includesData(activity['process_names'][i])"
+                                        class="mr-2 fab-button mat-elevation-z0" mat-mini-fab color="primary"
+                                        (click)="this.selectData(activity['process_names'][i],activity['extern_ids'][i], activity['process_ids'][i])">
+                                        <mat-icon class="fab-icon" aria-label="compare_arrows">compare_arrows</mat-icon>
+                                    </button>
+                                    <button *ngIf="this.includesData(activity['process_names'][i])"
+                                        class="mr-2 fab-button mat-elevation-z0" mat-mini-fab color="primary"
+                                        (click)="this.deselectData(activity['process_names'][i],activity['extern_ids'][i], activity['process_ids'][i])">
+                                        <mat-icon class="fab-icon" aria-label="remove">remove</mat-icon>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <a routerLink="/showCS2Impacts"
+                                        (click)="this.selectData(activity['process_names'][i],activity['extern_ids'][i], activity['process_ids'][i])">
+                                        {{activity['process_names'][i]}}
+                                    </a>
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </table>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+
+</div>
+
+<button class="close-button" mat-icon-button aria-label="Close-Button" (click)="close()">
+    <mat-icon>close</mat-icon>
+</button>
+
+

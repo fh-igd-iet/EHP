@@ -1,0 +1,77 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div class="app-component">
+  <h1>Users</h1>
+  <div class="mat-elevation-z8">
+    <div class="spinner-wrapper">
+      <mat-spinner [hidden]="this.loaded"></mat-spinner>
+    </div>
+    <form [formGroup]="formGroup" ng-if="this.formGroup" [hidden]="!this.loaded">
+      <mat-form-field class="myFilter">
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+    </form>
+
+    <mat-table [dataSource]="tableData" matSort>
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="login">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Login </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.login}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="groups">
+        <mat-header-cell *matHeaderCellDef> Groups </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.role_names}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="functions">
+        <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-spinner [diameter]="20" [hidden]="this.deleteProgress!=row.id"></mat-spinner>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0"
+            [hidden]="this.deleteProgress==row.id" (click)="this.edit(row)">
+            <mat-icon aria-label="edit">edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0"
+            [hidden]="this.deleteProgress==row.id" (click)="this.delete(row)">
+            <mat-icon aria-label="delete">delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="this.rest.can('user_management_edit') ? ['id', 'login', 'groups', 'functions'] : ['id', 'login', 'groups']">
+      </mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: this.rest.can('user_management_edit') ? ['id', 'login', 'groups', 'functions'] : ['id', 'login', 'groups']">
+      </mat-row>
+
+    </mat-table>
+    <button mat-raised-button aria-label="add new user" color="primary" (click)="openAddUserDialog()" id="addbutton"
+      *ngIf="this.rest.can('user_management_edit')">
+      <mat-icon>add</mat-icon> Add new user
+    </button>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div>
+</div>

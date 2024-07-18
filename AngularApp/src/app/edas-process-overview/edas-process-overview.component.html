@@ -1,0 +1,150 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div class="mat-elevation-z8">
+  <div class="spinner-wrapper">
+    <mat-spinner [hidden]="this.loaded"></mat-spinner>
+  </div>
+  <mat-form-field class="myFilter">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+  <form [formGroup]="formGroup" ng-if="this.formGroup" [hidden]="!this.loaded">
+
+    <mat-table [dataSource]="tableData" matSort>
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="demo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Demo </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <!--
+      <app-custom-mat-cell
+          [question]="this.questionsOverall[1]"
+          [name]="'Demo'"
+          [value]="row.Demo"
+          [controlName]="'Demo'"
+          [edit]="this.editId==row.id && this.questionsOverall[1]"
+          [formGroup]="this.formGroup"
+          [control]="this.formGroup.controls.Demo"></app-custom-mat-cell>-->
+          {{row.demo}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="pd">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> PD </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <!--
+      <app-custom-mat-cell
+        [question]="this.questionsOverall[2]"
+        [name]="'PD'"
+        [value]="row.PD"
+        [edit]="this.editId==row.id && this.questionsOverall[2]"
+        [formGroup]="this.formGroup"
+        [controlName]="'PD'"
+        [control]="this.formGroup.controls.PD"></app-custom-mat-cell>-->
+          {{row.pd}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="explanation">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Explanation </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <!--
+      <app-custom-mat-cell
+        [question]="this.questionsOverall[3]"
+        [name]="'Explanation'"
+        [value]="row.Explanation"
+        [controlName]="'Explanation'"
+        [edit]="this.editId==row.id && this.questionsOverall[3]"
+        [formGroup]="this.formGroup"
+        [control]="this.formGroup.controls.Explanation"></app-custom-mat-cell>-->
+          {{row.explanation}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="owner_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Owner </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <!--
+      <app-custom-mat-cell
+        [question]="this.questionsOverall[0]"
+        [name]="'Owner'"
+        [value]="row.Owner_name"
+        [controlName]="'Owner_id'"
+        [edit]="this.editId==row.id && this.questionsOverall[0]"
+        [formGroup]="this.formGroup"
+        [control]="this.formGroup.controls.Owner_id"></app-custom-mat-cell>
+      -->
+          {{row.owner_name}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="spd_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> SPD </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <!--
+      <app-custom-mat-cell
+      [question]="this.questionsOverall[4]"
+      [name]="'SPD'"
+      [value]="row.SPD_name"
+      [controlName]="'SPD_id'"
+      [edit]="this.editId==row.id && this.questionsOverall[4]"
+      [formGroup]="this.formGroup"
+      [control]="this.formGroup.controls.SPD_id"></app-custom-mat-cell>
+      -->
+          {{row.spd_id}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="cohort_letter">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Cohort-Inventories </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.cohort_letter}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="material">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Material </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.material}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="keyword_names">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Keyword-Names </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.keyword_names}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="functions">
+        <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-spinner [diameter]="20" [hidden]="this.deleteProgress!=row.id"></mat-spinner>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0" [hidden]="this.deleteProgress==row.id ||
+                      !this.rest.can('rest_visualization_put')" (click)="this.edit(row)">
+            <mat-icon aria-label="edit">edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" *ngIf="this.editId!=row.id && this.editId<0" [hidden]="this.deleteProgress==row.id ||
+                      !this.rest.can('rest_visualization_delete')" (click)="this.delete(row)">
+            <mat-icon aria-label="delete">delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="['id', 'demo', 'pd', 'explanation', 'owner_name', 'spd_id', 'cohort_letter','material', 'keyword_names', 'functions']">
+      </mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: ['id', 'demo', 'pd', 'explanation', 'owner_name', 'spd_id', 'cohort_letter','material', 'keyword_names', 'functions']">
+      </mat-row>
+
+    </mat-table>
+    <button mat-raised-button aria-label="add new process" color="primary" (click)="openAddProcessDialog()"
+      id="addbutton" [hidden]="!this.rest.can('rest_visualization_post')">
+      <mat-icon>add</mat-icon> Add new process
+    </button>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+
+  </form>
+</div>

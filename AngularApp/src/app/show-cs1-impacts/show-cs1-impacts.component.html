@@ -1,0 +1,70 @@
+<!--
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+-->
+<div class="row">
+  <div class="app-container col-lg-6">
+    <app-indicatorpicker #indicatorSelection 
+      (OnIndicatorsChanged)="this.indicatorsChanged($event)"
+      (OnMethodsChanged)="this.methodsChanged($event)">
+    
+    </app-indicatorpicker>
+    <h1>Available Results</h1>
+    <app-show-cs1-result-list #resultList restSrcPath="/process/result/all" listName="default"
+      (onSelectedResultsChanged)='this.resultsChanged($event)'>
+    </app-show-cs1-result-list>
+  </div>
+
+  <div class="app-container col-lg-6">
+    <h1>Impact Comparison</h1>
+
+    <!--div id="percentage-button-container">
+      <button mat-raised-button (click)="this.clearLocalStorage()">
+        Clear Local Storage 
+      </button>
+    </div -->
+
+    <div id="percentage-checkbox-container">
+      <input type="checkbox" name="percentage-checkbox" checked disabled>
+      <label for="percentage-checkbox">
+        show relative results only
+      </label>
+    </div>
+
+    <div class="mat-elevation-z3" style="margin-top:10px; padding: 5px;"
+      [hidden]="!(selectedResults.length>0&&selectedIndicators.length>0)">
+      <mat-tab-group dynamicHeight (selectedTabChange)="onTabChanged($event);">
+        <mat-tab label="by Indicator">
+          <app-show-cs1-compare-results-barchart *ngFor="let row of selectedIndicators" [tab]="0" [row]="row" [rows]="[]"
+            [results]="selectedResults" [lciaMethodIds]="selectedMethods" listName="default">
+          </app-show-cs1-compare-results-barchart>
+          <div style="margin-top:10px; padding: 5px;"
+            [hidden]="!(selectedResults.length>0&&selectedIndicators.length>2)">
+            <app-show-cs1-compare-results-radar #radarComp>
+            </app-show-cs1-compare-results-radar>
+          </div>
+        </mat-tab>
+        <mat-tab label="by Result">
+          <app-show-cs1-compare-results-barchart *ngFor="let result of selectedResults" [tab]="1" [row]="'all'"
+            [rows]="this.selectedIndicators" [result]="result" [results]="selectedResults"
+            [lciaMethodIds]="selectedMethods" listName="default">
+          </app-show-cs1-compare-results-barchart>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+
+
+
+  </div>
+</div>

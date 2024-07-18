@@ -1,0 +1,94 @@
+/**
+ * Eco Hybrid Platform - A tool to visualize LCIA Impacts and organize ILCD files
+ * Copyright (C) 2024 Fraunhofer IGD
+ * 
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the GNU General  * Public License as published by the Free Software 
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+ * PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program. 
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+/* Reset default margin and padding for all elements */
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Apply box-sizing border-box to all elements */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  
+  /* Image styling */
+  img {
+    width: 100%; /* Ensure images don't exceed their container's width */
+    height: 40%; /* Maintain aspect ratio */
+    object-fit: contain;
+    background-color: rgb(209, 208, 208);
+  }
+  
+  /* Close button positioning */
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 5px;
+    color: red;
+    
+  }
+  
+  /* Floating icon button */
+  .fab-button {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Icon styling */
+  .fab-icon {
+    font-size: 16px;
+    margin-top: -8px; /* Adjust vertically as needed */
+    color: white;
+  }
+  
+  /* Ensure list elements are properly styled */
+  ul {
+    list-style-type: none; /* Remove default list bullet points */
+    padding: 0; /* Remove default padding */
+  }
+  
+  /* Ensure tables and their containers have appropriate sizes */
+  #detailsTable,
+  #processlist,
+  #lca-data-container {
+    min-width: 300px; /* Ensure minimum width for containers */
+  }
+  
+  /* Ensure containers with potentially overflowing content have scrollbars */
+  #processlist,
+  #lca-data-container {
+    height: auto; /* Limit height to avoid excessive scrolling */
+    overflow: auto; /* Add scrollbars if content exceeds container height */
+  }
+  
+  /* Badge alignment */
+  .badge-align {
+    vertical-align: right; /* Align badge to the left */
+    margin-left: -8px; /* Adjust horizontally as needed */
+    margin-top: -25px; /* Adjust vertically as needed */
+    font-size: 10px; /* Adjust font size as needed */
+  }
+
+  .custom-dialog-container {
+    width: 600px !important;
+    height: 400px !important;
+  }
+
+  .td-spacing {
+    padding: 10px; /* Adjust as needed */
+}
